@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 public class PatrolState : BaseState
@@ -9,6 +10,7 @@ public class PatrolState : BaseState
     public void EnterState(Enemy enemy)
     {
         //Debug.Log("Start Patrol");
+        enemy.Animator.SetTrigger("PatrolState");
         _isMoving = false;
     }
 
@@ -18,7 +20,7 @@ public class PatrolState : BaseState
         {
             enemy.SwitchState(enemy.ChaseState);
         }
-
+        
         if (!_isMoving)
         {
             _isMoving = true;
@@ -27,6 +29,7 @@ public class PatrolState : BaseState
             enemy.NavMeshAgent.destination = _destination;
         }
 
+
         else
         {
             if (Vector3.Distance(_destination, enemy.transform.position) <= 0.1)
@@ -34,6 +37,7 @@ public class PatrolState : BaseState
                 _isMoving = false;
             }
         }
+        
     }
     public void ExitState(Enemy enemy)
     {

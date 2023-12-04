@@ -15,9 +15,11 @@ public class Enemy : MonoBehaviour
     [HideInInspector] public ChaseState ChaseState = new ChaseState();
     [HideInInspector] public RetreatState RetreatState = new RetreatState();
     [HideInInspector] public NavMeshAgent NavMeshAgent;
+    [HideInInspector] public Animator Animator;
 
     private void Awake()
     {
+        Animator = GetComponent<Animator>();
         _currentState = PatrolState;
         _currentState.EnterState(this);
         NavMeshAgent = GetComponent<NavMeshAgent>();
