@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,8 +14,13 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform _camera;
     [SerializeField] private float _powerupDuration;
 
+    [SerializeField] private Transform _respawnPoint;
+    [SerializeField] private int _health;
+    [SerializeField] private TMP_Text _healthText;
+
     private Rigidbody _rigidBody;
     private Coroutine _powerupCoroutine;
+    private bool _isPowerUpActive;
 
     private void Awake()
     {
@@ -22,8 +28,9 @@ public class Player : MonoBehaviour
     }
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        UpdateUI();
 
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
@@ -47,7 +54,6 @@ public class Player : MonoBehaviour
         //Debug.Log("Horizontal: " + horizontal);
         //Debug.Log("Vertical: " + vertical);
 
-
     }
 
     public void PickPowerUp()
@@ -60,21 +66,54 @@ public class Player : MonoBehaviour
         //Debug.Log("Pick Power Up");
         _powerupCoroutine = StartCoroutine(StartPowerUp());
     }
+    private void UpdateUI()
+    {
+        _healthText.text = "Health: " + _health;
+    }
+    public void Dead()
+    {
+        _health -= 1;
 
+        if (_health > 0)
+        {
+            transform.position = _respawnPoint.position;
+        }
+        else
+        {
+            _health = 0;
+            Debug.Log("Lose");
+        }
+
+        UpdateUI();
+    }
     private IEnumerator StartPowerUp()
     {
+        _isPowerUpActive = true;
+
         if (OnPowerUpStart != null)
         {
             OnPowerUpStart();
         }
 
         yield return new WaitForSeconds(_powerupDuration);
+        _isPowerUpActive = false;
 
         if (OnPowerUpStop != null)
         {
             OnPowerUpStop();
         }
         
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (_isPowerUpActive)
+        {
+            if (collision.gameObject.CompareTag("Enemy"))
+            {
+                collision.gameObject.GetComponent<Enemy>().Dead();
+            }
+        }
     }
 
 }
