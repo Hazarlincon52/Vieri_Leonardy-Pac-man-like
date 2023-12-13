@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -62,7 +63,7 @@ public class Player : MonoBehaviour
         {
             StopCoroutine(_powerupCoroutine);
         }
-
+        Debug.Log(OnPowerUpStart);
         //Debug.Log("Pick Power Up");
         _powerupCoroutine = StartCoroutine(StartPowerUp());
     }
@@ -73,7 +74,7 @@ public class Player : MonoBehaviour
     public void Dead()
     {
         _health -= 1;
-
+        
         if (_health > 0)
         {
             transform.position = _respawnPoint.position;
@@ -81,10 +82,10 @@ public class Player : MonoBehaviour
         else
         {
             _health = 0;
-            Debug.Log("Lose");
+            SceneManager.LoadScene("LoseScreen");
         }
-
         UpdateUI();
+
     }
     private IEnumerator StartPowerUp()
     {

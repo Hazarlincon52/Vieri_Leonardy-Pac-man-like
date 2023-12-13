@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour
             _currentState.UpdateState(this);
         }
     }
-
+    
     public void SwitchState(BaseState state)
     {
         _currentState.ExitState(this);
@@ -58,9 +58,10 @@ public class Enemy : MonoBehaviour
     {
         SwitchState(PatrolState);
     }
-
     public void Dead()
     {
+        Player.OnPowerUpStart -= StartRetreating;
+        Player.OnPowerUpStop -= StopRetreating;
         Destroy(gameObject);
     }
     private void OnCollisionEnter(Collision collision)
